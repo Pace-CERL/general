@@ -1,0 +1,26 @@
+#CREATE A PASSWORD FILE:
+#sudo htpasswd -c /etc/apache2/.htpasswd kali
+
+#ADD A DIRECTORY TO PROTECT/ATTACK
+#sudo mkdir /var/www/html/attack
+
+#DEFINE THE NEW DIRECTORY FOR APACHE
+#nano /etc/apache2/sites-available/YOURDEFAULTSITENAMEHERE.conf
+
+#Add this between the VirtualHost tags:
+
+  <Directory "/var/www/html/attack">
+      AuthType Basic
+      AuthName "Restricted Content"
+      AuthUserFile /etc/apache2/.htpasswd
+      Require valid-user
+  </Directory>
+
+#RESTART APACHE
+#sudo systemctl enable apache2
+#sudo systemctl start apache2
+
+#ATTACK YOUR SITE WITH HYDRA
+#hydra -V -l kali -P /usr/share/wordlists/rockyou.txt http-get://localhost/attack/
+
+#Note: The trailing slash (‘/’) is needed.
